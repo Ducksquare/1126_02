@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="畢製進度加油小卡">
+  <title>畢製做了沒！</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: #51465f;
+      background: linear-gradient(135deg, #fff1f5 0%, #eeeaff 48%, #e5f5ff 100%);
+    }
+    .card {
+      width: min(100%, 440px);
+      padding: 56px 32px 44px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,.85);
+      border-radius: 30px;
+      background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(255,235,246,.82) 52%, rgba(231,239,255,.9));
+      box-shadow: 0 22px 60px rgba(128, 112, 166, .18), inset 0 1px 0 #fff;
+      backdrop-filter: blur(12px);
+    }
+    h1 { margin: 0 0 32px; font-size: clamp(2rem, 8vw, 2.6rem); letter-spacing: .04em; }
+    .glow-button {
+      border: 0;
+      border-radius: 999px;
+      padding: 17px 34px;
+      color: #fff;
+      font: inherit;
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      cursor: pointer;
+      background: linear-gradient(120deg, #f5a8c8, #b6a5f5 55%, #91c9ed);
+      box-shadow: 0 0 16px rgba(211, 153, 226, .55), 0 8px 24px rgba(157, 137, 209, .32), inset 0 1px 0 rgba(255,255,255,.65);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .glow-button:hover { transform: translateY(-3px); box-shadow: 0 0 26px rgba(211,153,226,.75), 0 12px 28px rgba(157,137,209,.38); }
+    .glow-button:active { transform: translateY(0) scale(.98); }
+    .glow-button:focus-visible { outline: 3px solid #8874c8; outline-offset: 5px; }
+    #result { min-height: 76px; margin: 28px 0 0; line-height: 1.8; color: #716482; }
+    #count { display: block; margin-bottom: 5px; font-weight: 700; color: #8c76bd; }
+    .modal-backdrop {
+      position: fixed; inset: 0; display: none; place-items: center;
+      padding: 24px; background: rgba(65, 48, 82, .35); z-index: 10;
+    }
+    .modal-backdrop.show { display: grid; }
+    .modal {
+      width: min(100%, 360px); padding: 30px 24px; text-align: center;
+      border: 1px solid rgba(255,255,255,.9); border-radius: 24px;
+      background: linear-gradient(145deg, #fff8fc, #f0edff);
+      box-shadow: 0 18px 55px rgba(55, 40, 75, .25);
+      animation: pop .25s ease-out;
+    }
+    .modal h2 { margin: 0 0 12px; font-size: 1.35rem; }
+    .modal p { margin: 0 0 20px; line-height: 1.7; }
+    .modal button {
+      border: 0; border-radius: 999px; padding: 10px 24px; cursor: pointer;
+      color: white; font: inherit; font-weight: 700;
+      background: linear-gradient(120deg, #f5a8c8, #b6a5f5);
+    }
+    @keyframes pop { from { opacity: 0; transform: scale(.88); } to { opacity: 1; transform: scale(1); } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>畢製做了沒！</h1>
+    <button class="glow-button" id="cheerButton" type="button">啊哈...</button>
+    <p id="result" aria-live="polite">按下按鈕，領取今日份的鼓勵！</p>
+  </main>
+
+  <div class="modal-backdrop" id="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <div class="modal">
+      <h2 id="popupTitle">警告！</h2>
+      <p>不要再玩了啦 天窗快破了</p>
+      <button id="closePopup" type="button">好啦好啦</button>
+    </div>
+  </div>
+
+  <script>
+    const cheerButton = document.getElementById('cheerButton');
+    const result = document.getElementById('result');
+    const popup = document.getElementById('popup');
+    const closePopup = document.getElementById('closePopup');
+    let popupShown = false;
+
+    closePopup.addEventListener('click', () => popup.classList.remove('show'));
+    popup.addEventListener('click', (event) => {
+      if (event.target === popup) popup.classList.remove('show');
+    });
+    const encouragements = [
+      '同學啊...',
+      '你的天窗...',
+      '不要再混了',
+      '我相信您喔',
+      '有人在瞪著你喔',
+          '進度條正在默默看著你',
+      '不要讓靈感等太久啦',
+      '再滑下去，天就要亮了喔',
+      '你有在做吧？我先相信你',
+          '先做五分鐘也算有進度！',
+      '畢製本人正在呼喚你',
+      '加油，苦力...我是說創作者！'
+    ];
+    let clickCount = 0;
+
+    cheerButton.addEventListener('click', () => {
+      clickCount += 1;
+      const message = encouragements[(clickCount - 1) % encouragements.length];
+      result.innerHTML = `<span id="count">已補充 ${clickCount} 次能量 ✨</span>${message}`;
+
+      if (clickCount >= 99 && !popupShown) {
+        popupShown = true;
+        popup.classList.add('show');
+        closePopup.focus();
+      }
+    });
+  </script>
+</body>
+</html>
